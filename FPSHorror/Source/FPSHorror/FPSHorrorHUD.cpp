@@ -17,7 +17,7 @@ AFPSHorrorHUD::AFPSHorrorHUD()
 void AFPSHorrorHUD::DrawHUD()
 {
 	Super::DrawHUD();
-
+	
 	// Draw very simple crosshair
 
 	// find center of the Canvas
