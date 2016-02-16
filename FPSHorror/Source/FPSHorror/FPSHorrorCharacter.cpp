@@ -17,7 +17,7 @@ AFPSHorrorCharacter::AFPSHorrorCharacter()
 {
 	//test
 	Health = 100;
-
+	DecayingRate = 1.5f;
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -228,14 +228,22 @@ void AFPSHorrorCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	Health -= DeltaTime / 5;
+
+	HealthDecay(DeltaTime);
 	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, FString::FromInt(Health));
 
 }
 
-void AFPSHorrorCharacter::HealthTest()
+void AFPSHorrorCharacter::HealthDecay(float DeltaTime)
 {
+	if (Health <= 0)
+	{
+		const FString Message = "You Died";
+		GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, Message);
+		return;
+	}
 
+	Health -= DeltaTime * DecayingRate;
 }
 
 

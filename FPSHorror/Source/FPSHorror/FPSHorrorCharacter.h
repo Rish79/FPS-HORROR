@@ -85,11 +85,17 @@ protected:
 	TouchData	TouchItem;
 
 
-	//test
-	void HealthTest();
+	//Health Decay over time
+	void HealthDecay(float DeltaTime);
 
 public:
-	float Health;
+	UPROPERTY(EditAnywhere)
+		float Health;
+
+	UPROPERTY(EditAnywhere)
+		float DecayingRate;
+
+	//called everyFrame
 	void Tick(float DeltaTime);
 
 protected:
