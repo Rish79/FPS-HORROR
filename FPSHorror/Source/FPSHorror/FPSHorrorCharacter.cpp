@@ -1,6 +1,8 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
+
 #include "FPSHorror.h"
+#include "Engine.h"
 #include "FPSHorrorCharacter.h"
 #include "FPSHorrorProjectile.h"
 #include "Animation/AnimInstance.h"
@@ -13,6 +15,10 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 AFPSHorrorCharacter::AFPSHorrorCharacter()
 {
+	//test
+	Health = 100;
+	DecayingRate = 1.5f;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -140,6 +146,7 @@ void AFPSHorrorCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FV
 
 void AFPSHorrorCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
+
 	if ((TouchItem.bIsPressed == true) && ( TouchItem.FingerIndex==FingerIndex))
 	{
 		if (TouchItem.bIsPressed)
@@ -215,3 +222,28 @@ bool AFPSHorrorCharacter::EnableTouchscreenMovement(class UInputComponent* Input
 	}
 	return bResult;
 }
+
+
+void AFPSHorrorCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+
+	HealthDecay(DeltaTime);
+	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, FString::FromInt(Health));
+
+}
+
+void AFPSHorrorCharacter::HealthDecay(float DeltaTime)
+{
+	if (Health <= 0)
+	{
+		const FString Message = "You Died";
+		GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, Message);
+		return;
+	}
+
+	Health -= DeltaTime * DecayingRate;
+}
+
+

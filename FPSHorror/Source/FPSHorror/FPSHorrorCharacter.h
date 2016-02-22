@@ -83,7 +83,21 @@ protected:
 	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
 	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
 	TouchData	TouchItem;
-	
+
+
+	//Health Decay over time
+	void HealthDecay(float DeltaTime);
+
+public:
+	UPROPERTY(EditAnywhere)
+		float Health;
+
+	UPROPERTY(EditAnywhere)
+		float DecayingRate;
+
+	//called everyFrame
+	void Tick(float DeltaTime);
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
