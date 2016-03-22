@@ -89,10 +89,10 @@ protected:
 	void HealthDecay(float DeltaTime);
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
 		float Health;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
 		float DecayingRate;
 
 	//called everyFrame
