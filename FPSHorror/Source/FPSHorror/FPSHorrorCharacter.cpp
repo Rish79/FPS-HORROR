@@ -16,7 +16,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 AFPSHorrorCharacter::AFPSHorrorCharacter()
 {
 	//test
-	Health = 100;
+	Health = MaxHealth;
 	DecayingRate = 1.5f;
 
 	// Set size for collision capsule
@@ -246,4 +246,8 @@ void AFPSHorrorCharacter::HealthDecay(float DeltaTime)
 	Health -= DeltaTime * DecayingRate;
 }
 
+int8 AFPSHorrorCharacter::GetPeerRatio()
+{
+	return CurrentPeers / MaxPeers;
+}
 
