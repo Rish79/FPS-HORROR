@@ -94,19 +94,19 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
 		float DecayingRate;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
+		float CurrentPeers;
 	//called everyFrame
 	void Tick(float DeltaTime);
 	
-	UPROPERTY(EditAnywhere)
-		int8 CurrentPeers;
+	
 
 	int8 GetPeerRatio();
 
 
 private:
-	UPROPERTY(EditAnywhere)
-		int8 MaxPeers;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
+		float MaxPeers;
 
 	UPROPERTY(EditAnywhere)
 		float MaxHealth = 100;
