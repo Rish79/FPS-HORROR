@@ -115,6 +115,8 @@ private:
 	UPROPERTY(EditAnywhere)
 		float MaxHealth = 100;
 
+	void LoadMainMenu();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
