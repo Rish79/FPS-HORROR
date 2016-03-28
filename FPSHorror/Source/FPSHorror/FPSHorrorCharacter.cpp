@@ -246,6 +246,7 @@ void AFPSHorrorCharacter::HealthDecay(float DeltaTime)
 	{
 		const FString Message = "You Died";
 		GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, Message);
+		LoadMainMenu();
 		return;
 	}
 
@@ -255,5 +256,10 @@ void AFPSHorrorCharacter::HealthDecay(float DeltaTime)
 int8 AFPSHorrorCharacter::GetPeerRatio()
 {
 	return CurrentPeers / MaxPeers;
+}
+
+void AFPSHorrorCharacter::LoadMainMenu()
+{
+	UGameplayStatics::OpenLevel(this, FName(TEXT("MainMenu")));
 }
 
