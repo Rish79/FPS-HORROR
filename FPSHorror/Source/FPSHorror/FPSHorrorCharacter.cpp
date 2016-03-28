@@ -39,13 +39,19 @@ AFPSHorrorCharacter::AFPSHorrorCharacter()
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 
-	// Create a gun mesh component
-	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
-	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
-	FP_Gun->bCastDynamicShadow = false;
-	FP_Gun->CastShadow = false;
-	FP_Gun->AttachTo(Mesh1P, TEXT("GripPoint"), EAttachLocation::SnapToTargetIncludingScale, true);
+	// Create a Sowrd mesh component
+	FP_Sword = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Sword"));
+	FP_Sword->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	FP_Sword->bCastDynamicShadow = false;
+	FP_Sword->CastShadow = false;
+	FP_Sword->AttachTo(Mesh1P, TEXT("Sword"), EAttachLocation::SnapToTargetIncludingScale, true);
 
+	// Create a Hammer mesh component
+	FP_Hammer = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Hammer"));
+	FP_Hammer->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	FP_Hammer->bCastDynamicShadow = false;
+	FP_Hammer->CastShadow = false;
+	FP_Hammer->AttachTo(Mesh1P, TEXT("Hammer"), EAttachLocation::SnapToTargetIncludingScale, true);
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 30.0f, 10.0f);
