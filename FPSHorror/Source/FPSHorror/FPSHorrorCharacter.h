@@ -53,9 +53,6 @@ public:
 	class UAnimMontage* FireAnimation;
 
 protected:
-	
-	/** Fires a projectile. */
-	void OnFire();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -100,15 +97,14 @@ public:
 		float DecayingRate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
 		float CurrentPeers;
+	/** Fires a projectile. */
+	UFUNCTION(BlueprintCallable, Category = Player)
+		void OnFire();
 	//called everyFrame
 	void Tick(float DeltaTime);
 	
 
 	int8 GetPeerRatio();
-
-
-	UFUNCTION(BlueprintImplementableEvent)
-		void SetHealth(float newHealth);
 	
 
 	
