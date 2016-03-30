@@ -6,6 +6,8 @@
 #include "FPSHorrorCharacter.h"
 #include "FPSHorrorProjectile.h"
 #include "Animation/AnimInstance.h"
+#include "DrawDebugHelpers.h"
+#include "Guard.h"
 #include "GameFramework/InputSettings.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -122,6 +124,35 @@ void AFPSHorrorCharacter::OnFire()
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
+
+	// LINE TRACE STUFF
+
+	FCollisionQueryParams Traceparam;
+	FCollisionObjectQueryParams CollisionObjectParams;
+
+	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+
+	FVector End = Start + FirstPersonCameraComponent->GetForwardVector() * range;
+
+	FHitResult HitData(ForceInit);
+
+	//ignore collision with player
+	AFPSHorrorCharacter* myCharacter = Cast<AFPSHorrorCharacter>(this);
+	Traceparam.AddIgnoredActor(myCharacter);
+
+	GetWorld()->LineTraceSingle(HitData, Start, End, Traceparam, CollisionObjectParams);
+
+
+	//Check the target's hit by the line trace
+	if (HitData.GetActor() != NULL)
+	{
+		AGuard* newGuard = Cast<AGuard>(HitData.GetActor());
+		if (newGuard)
+		{
+			newGuard->Health -= Damage;
+		}
+	}
+
 
 }
 
