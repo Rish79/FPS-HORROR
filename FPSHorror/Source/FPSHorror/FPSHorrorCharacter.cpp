@@ -34,6 +34,19 @@ AFPSHorrorCharacter::AFPSHorrorCharacter()
 	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 64.f); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
+
+	// Scene Color Settings
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_SceneColorTint = true;
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_VignetteIntensity = true;
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_GrainIntensity = true;
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_ColorContrast = true;
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_ColorGamma = true;
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_ColorGain = true;
+
+	FirstPersonCameraComponent->PostProcessSettings.SceneColorTint = FLinearColor(.5f, .5f, .5f, 1.0f);
+	FirstPersonCameraComponent->PostProcessSettings.VignetteIntensity = 0.0f;
+	FirstPersonCameraComponent->PostProcessSettings.GrainIntensity = .15f;
+
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
 	Mesh1P->SetOnlyOwnerSee(true);
@@ -269,6 +282,17 @@ void AFPSHorrorCharacter::Tick(float DeltaTime)
 	HealthDecay(DeltaTime);
 	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, FString::FromInt(Health));
 
+	// Screen getting bloodier as blood level gets smaller
+
+	FirstPersonCameraComponent->PostProcessSettings.ColorContrast.Set(1.0f + (1.0f * ((MaxHealth - Health) / 100.0f)), 1.0f + (1.0f * ((MaxHealth - Health) / 100.0f)), 1.0f + (1.0f * ((MaxHealth - Health) / 100.0f)));
+	FirstPersonCameraComponent->PostProcessSettings.SceneColorTint = FLinearColor(.5f + (.5f * ((MaxHealth - Health) / 100.0f)), .5f - (.3f * ((MaxHealth - Health) / 100.0f)), .5f - (.3f * ((MaxHealth - Health) / 100.0f)));
+	FirstPersonCameraComponent->PostProcessSettings.ColorGamma.Set(1.0f, 1.0f, 1.0f - (.2f * ((MaxHealth - Health) / 100.0f)));
+	FirstPersonCameraComponent->PostProcessSettings.ColorGain.Set(1.0f - (.25f * ((MaxHealth - Health) / 100.0f)), 1.0f - (.25f * ((MaxHealth - Health) / 100.0f)), 1.0f - (.25f * ((MaxHealth - Health) / 100.0f)));
+
+	if (Health <= 20)
+	{
+		FirstPersonCameraComponent->PostProcessSettings.VignetteIntensity = (20.0f - Health) / 10.0f;
+	}
 }
 
 void AFPSHorrorCharacter::HealthDecay(float DeltaTime)
