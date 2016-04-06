@@ -89,7 +89,7 @@ void AFPSHorrorCharacter::SetupPlayerInputComponent(class UInputComponent* Input
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AFPSHorrorCharacter::TouchStarted);
 	if( EnableTouchscreenMovement(InputComponent) == false )
 	{
-		InputComponent->BindAction("Fire", IE_Pressed, this, &AFPSHorrorCharacter::OnFire);
+		//InputComponent->BindAction("Fire", IE_Pressed, this, &AFPSHorrorCharacter::OnFire);
 	}
 	
 	InputComponent->BindAxis("MoveForward", this, &AFPSHorrorCharacter::MoveForward);

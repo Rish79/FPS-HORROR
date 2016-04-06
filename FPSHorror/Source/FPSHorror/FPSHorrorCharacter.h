@@ -98,8 +98,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
 		float CurrentPeers;
 	/** Fires a projectile. */
-	UFUNCTION(BlueprintCallable, Category = Player)
+	UFUNCTION(BlueprintCallable, Category = "Player")
 		void OnFire();
+
 	//called everyFrame
 	void Tick(float DeltaTime);
 	
