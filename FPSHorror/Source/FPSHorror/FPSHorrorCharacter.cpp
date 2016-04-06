@@ -85,16 +85,16 @@ void AFPSHorrorCharacter::SetupPlayerInputComponent(class UInputComponent* Input
 
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-	
+
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AFPSHorrorCharacter::TouchStarted);
-	if( EnableTouchscreenMovement(InputComponent) == false )
+	if (EnableTouchscreenMovement(InputComponent) == false)
 	{
 		//InputComponent->BindAction("Fire", IE_Pressed, this, &AFPSHorrorCharacter::OnFire);
 	}
-	
+
 	InputComponent->BindAxis("MoveForward", this, &AFPSHorrorCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &AFPSHorrorCharacter::MoveRight);
-	
+
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
@@ -105,38 +105,7 @@ void AFPSHorrorCharacter::SetupPlayerInputComponent(class UInputComponent* Input
 }
 
 void AFPSHorrorCharacter::OnFire()
-{ 
-	//// try and fire a projectile
-	//if (ProjectileClass != NULL)
-	//{
-	//	const FRotator SpawnRotation = GetControlRotation();
-	//	// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-	//	const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
-
-	//	UWorld* const World = GetWorld();
-	//	if (World != NULL)
-	//	{
-	//		// spawn the projectile at the muzzle
-	//		World->SpawnActor<AFPSHorrorProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
-	//	}
-	//}
-
-	//// try and play the sound if specified
-	//if (FireSound != NULL)
-	//{
-	//	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	//}
-
-	//// try and play a firing animation if specified
-	//if(FireAnimation != NULL)
-	//{
-	//	// Get the animation object for the arms mesh
-	//	UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-	//	if(AnimInstance != NULL)
-	//	{
-	//		AnimInstance->Montage_Play(FireAnimation, 1.f);
-	//	}
-	//}
+{
 
 	// LINE TRACE STUFF
 
@@ -144,9 +113,9 @@ void AFPSHorrorCharacter::OnFire()
 	FCollisionObjectQueryParams CollisionObjectParams;
 
 	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+	//FVector Start = FirstPersonCameraComponent
 
 	FVector End = Start + FirstPersonCameraComponent->GetForwardVector() * range;
-
 	FHitResult HitData(ForceInit);
 
 	//ignore collision with player
@@ -163,6 +132,11 @@ void AFPSHorrorCharacter::OnFire()
 		if (newGuard)
 		{
 			newGuard->Health -= Damage;
+			if (newGuard->Health <= 0)//increase the power meter if the guard is dead
+			{
+				CurrentPower += 10;
+				CheckPower();
+			}
 		}
 	}
 
@@ -171,7 +145,7 @@ void AFPSHorrorCharacter::OnFire()
 
 void AFPSHorrorCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
-	if( TouchItem.bIsPressed == true )
+	if (TouchItem.bIsPressed == true)
 	{
 		return;
 	}
@@ -187,7 +161,7 @@ void AFPSHorrorCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FV
 	{
 		return;
 	}
-	if( ( FingerIndex == TouchItem.FingerIndex ) && (TouchItem.bMoved == false) )
+	if ((FingerIndex == TouchItem.FingerIndex) && (TouchItem.bMoved == false))
 	{
 		OnFire();
 	}
@@ -197,7 +171,7 @@ void AFPSHorrorCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FV
 void AFPSHorrorCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
 
-	if ((TouchItem.bIsPressed == true) && ( TouchItem.FingerIndex==FingerIndex))
+	if ((TouchItem.bIsPressed == true) && (TouchItem.FingerIndex == FingerIndex))
 	{
 		if (TouchItem.bIsPressed)
 		{
@@ -209,7 +183,7 @@ void AFPSHorrorCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const
 					FVector MoveDelta = Location - TouchItem.Location;
 					FVector2D ScreenSize;
 					ViewportClient->GetViewportSize(ScreenSize);
-					FVector2D ScaledDelta = FVector2D( MoveDelta.X, MoveDelta.Y) / ScreenSize;									
+					FVector2D ScaledDelta = FVector2D(MoveDelta.X, MoveDelta.Y) / ScreenSize;
 					if (ScaledDelta.X != 0.0f)
 					{
 						TouchItem.bMoved = true;
@@ -263,7 +237,7 @@ void AFPSHorrorCharacter::LookUpAtRate(float Rate)
 bool AFPSHorrorCharacter::EnableTouchscreenMovement(class UInputComponent* InputComponent)
 {
 	bool bResult = false;
-	if(FPlatformMisc::GetUseVirtualJoysticks() || GetDefault<UInputSettings>()->bUseMouseForTouch )
+	if (FPlatformMisc::GetUseVirtualJoysticks() || GetDefault<UInputSettings>()->bUseMouseForTouch)
 	{
 		bResult = true;
 		InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AFPSHorrorCharacter::BeginTouch);
@@ -277,7 +251,7 @@ bool AFPSHorrorCharacter::EnableTouchscreenMovement(class UInputComponent* Input
 void AFPSHorrorCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 
 	HealthDecay(DeltaTime);
 	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, FString::FromInt(Health));
@@ -316,5 +290,40 @@ int8 AFPSHorrorCharacter::GetPeerRatio()
 void AFPSHorrorCharacter::LoadMainMenu()
 {
 	UGameplayStatics::OpenLevel(this, FName(TEXT("MainMenu")));
+}
+
+void AFPSHorrorCharacter::CheckPower()
+{
+	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / UpgradeDivision + UpgradeAddition));
+	Damage = Damage + (Damage / UpgradeDivision + UpgradeAddition);
+
+	GEngine->AddOnScreenDebugMessage(2, 2, FColor::Blue, FString::FromInt(CurrentPower));
+	GEngine->AddOnScreenDebugMessage(3, 2, FColor::Green, FString::FromInt(CharacterMovement->MaxWalkSpeed));
+	GEngine->AddOnScreenDebugMessage(4, 2, FColor::Yellow, FString::FromInt(Damage));
+
+	//if (CurrentPower == 20) //Upgrades
+	//{
+	//	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / 10 + 10));
+
+	//	const FString Message = "Increased Movement 1";
+	//	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, Message);
+	//}
+
+	//else if (CurrentPower == 30) //Upgrades
+	//{
+	//	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / 10 + 10));
+
+	//	const FString Message = "Increased Movement 2";
+	//	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, Message);
+	//}
+
+	////else if (CurrentPower == 40) //Upgrades
+	//{
+	//	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / 10 + 10));
+
+	//	const FString Message = "Increased Movement 2";
+	//	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, Message);
+	//}
+
 }
 
