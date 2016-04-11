@@ -104,6 +104,7 @@ void AFPSHorrorCharacter::SetupPlayerInputComponent(class UInputComponent* Input
 	InputComponent->BindAxis("LookUpRate", this, &AFPSHorrorCharacter::LookUpAtRate);
 }
 
+#pragma optimize("",off)
 void AFPSHorrorCharacter::OnFire()
 {
 
@@ -139,10 +140,8 @@ void AFPSHorrorCharacter::OnFire()
 			}
 		}
 	}
-
-
 }
-
+#pragma optimize("",on)
 void AFPSHorrorCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
 	if (TouchItem.bIsPressed == true)
@@ -294,36 +293,13 @@ void AFPSHorrorCharacter::LoadMainMenu()
 
 void AFPSHorrorCharacter::CheckPower()
 {
-	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / UpgradeDivision + UpgradeAddition));
-	Damage = Damage + (Damage / UpgradeDivision + UpgradeAddition);
+	const int8 upgradeDenom = UpgradeDivision + UpgradeAddition;
+	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / upgradeDenom));
+	Damage +=  (Damage / upgradeDenom);
 
 	GEngine->AddOnScreenDebugMessage(2, 2, FColor::Blue, FString::FromInt(CurrentPower));
 	GEngine->AddOnScreenDebugMessage(3, 2, FColor::Green, FString::FromInt(CharacterMovement->MaxWalkSpeed));
 	GEngine->AddOnScreenDebugMessage(4, 2, FColor::Yellow, FString::FromInt(Damage));
-
-	//if (CurrentPower == 20) //Upgrades
-	//{
-	//	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / 10 + 10));
-
-	//	const FString Message = "Increased Movement 1";
-	//	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, Message);
-	//}
-
-	//else if (CurrentPower == 30) //Upgrades
-	//{
-	//	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / 10 + 10));
-
-	//	const FString Message = "Increased Movement 2";
-	//	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, Message);
-	//}
-
-	////else if (CurrentPower == 40) //Upgrades
-	//{
-	//	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / 10 + 10));
-
-	//	const FString Message = "Increased Movement 2";
-	//	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, Message);
-	//}
 
 }
 
