@@ -56,3 +56,9 @@ Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+Content/InfinityBladeIceLands/*
+Content/Environment/*
+Content/InfinityBladeGrassLands/*
+Content/InfinityBladeWeapons/*
+Content/InfinityBladeEffects/*

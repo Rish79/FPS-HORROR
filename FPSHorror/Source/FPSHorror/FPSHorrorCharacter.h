@@ -16,7 +16,11 @@ class AFPSHorrorCharacter : public ACharacter
 
 	/** Gun mesh: 1st person view (seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	class USkeletalMeshComponent* FP_Gun;
+	class USkeletalMeshComponent* FP_Sword;
+
+	/** Gun mesh: 1st person view (seen only by self) */
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	class USkeletalMeshComponent* FP_Hammer;
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -49,9 +53,6 @@ public:
 	class UAnimMontage* FireAnimation;
 
 protected:
-	
-	/** Fires a projectile. */
-	void OnFire();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -83,7 +84,45 @@ protected:
 	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
 	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
 	TouchData	TouchItem;
+
+
+	//Health Decay over time
+	void HealthDecay(float DeltaTime);
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
+		float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
+		float DecayingRate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
+		float CurrentPeers;
+	/** Fires a projectile. */
+	UFUNCTION(BlueprintCallable, Category = "Player")
+		void OnFire();
+
+	//called everyFrame
+	void Tick(float DeltaTime);
 	
+
+	int8 GetPeerRatio();
+	
+
+	
+private:
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
+		float MaxPeers;
+
+	UPROPERTY(EditAnywhere)
+		float MaxHealth = 100;
+
+	UPROPERTY(EditAnywhere) //line trace range for the player's attack
+		float range = 250;	
+
+	UPROPERTY(EditAnywhere)
+		float Damage = 20.0f;
+	void LoadMainMenu();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;

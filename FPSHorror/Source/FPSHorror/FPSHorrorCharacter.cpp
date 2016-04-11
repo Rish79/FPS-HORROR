@@ -1,9 +1,13 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
+
 #include "FPSHorror.h"
+#include "Engine.h"
 #include "FPSHorrorCharacter.h"
 #include "FPSHorrorProjectile.h"
 #include "Animation/AnimInstance.h"
+#include "DrawDebugHelpers.h"
+#include "Guard.h"
 #include "GameFramework/InputSettings.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -13,6 +17,10 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 AFPSHorrorCharacter::AFPSHorrorCharacter()
 {
+	//test
+	Health = MaxHealth;
+	DecayingRate = 1.5f;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -26,6 +34,19 @@ AFPSHorrorCharacter::AFPSHorrorCharacter()
 	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 64.f); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
+
+	// Scene Color Settings
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_SceneColorTint = true;
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_VignetteIntensity = true;
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_GrainIntensity = true;
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_ColorContrast = true;
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_ColorGamma = true;
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_ColorGain = true;
+
+	FirstPersonCameraComponent->PostProcessSettings.SceneColorTint = FLinearColor(.5f, .5f, .5f, 1.0f);
+	FirstPersonCameraComponent->PostProcessSettings.VignetteIntensity = 0.0f;
+	FirstPersonCameraComponent->PostProcessSettings.GrainIntensity = .15f;
+
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
 	Mesh1P->SetOnlyOwnerSee(true);
@@ -33,13 +54,19 @@ AFPSHorrorCharacter::AFPSHorrorCharacter()
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 
-	// Create a gun mesh component
-	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
-	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
-	FP_Gun->bCastDynamicShadow = false;
-	FP_Gun->CastShadow = false;
-	FP_Gun->AttachTo(Mesh1P, TEXT("GripPoint"), EAttachLocation::SnapToTargetIncludingScale, true);
+	// Create a Sowrd mesh component
+	FP_Sword = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Sword"));
+	FP_Sword->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	FP_Sword->bCastDynamicShadow = false;
+	FP_Sword->CastShadow = false;
+	FP_Sword->AttachTo(Mesh1P, TEXT("Sword"), EAttachLocation::SnapToTargetIncludingScale, true);
 
+	// Create a Hammer mesh component
+	FP_Hammer = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Hammer"));
+	FP_Hammer->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	FP_Hammer->bCastDynamicShadow = false;
+	FP_Hammer->CastShadow = false;
+	FP_Hammer->AttachTo(Mesh1P, TEXT("Hammer"), EAttachLocation::SnapToTargetIncludingScale, true);
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 30.0f, 10.0f);
@@ -62,7 +89,7 @@ void AFPSHorrorCharacter::SetupPlayerInputComponent(class UInputComponent* Input
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AFPSHorrorCharacter::TouchStarted);
 	if( EnableTouchscreenMovement(InputComponent) == false )
 	{
-		InputComponent->BindAction("Fire", IE_Pressed, this, &AFPSHorrorCharacter::OnFire);
+		//InputComponent->BindAction("Fire", IE_Pressed, this, &AFPSHorrorCharacter::OnFire);
 	}
 	
 	InputComponent->BindAxis("MoveForward", this, &AFPSHorrorCharacter::MoveForward);
@@ -79,37 +106,66 @@ void AFPSHorrorCharacter::SetupPlayerInputComponent(class UInputComponent* Input
 
 void AFPSHorrorCharacter::OnFire()
 { 
-	// try and fire a projectile
-	if (ProjectileClass != NULL)
-	{
-		const FRotator SpawnRotation = GetControlRotation();
-		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
+	//// try and fire a projectile
+	//if (ProjectileClass != NULL)
+	//{
+	//	const FRotator SpawnRotation = GetControlRotation();
+	//	// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+	//	const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
 
-		UWorld* const World = GetWorld();
-		if (World != NULL)
+	//	UWorld* const World = GetWorld();
+	//	if (World != NULL)
+	//	{
+	//		// spawn the projectile at the muzzle
+	//		World->SpawnActor<AFPSHorrorProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+	//	}
+	//}
+
+	//// try and play the sound if specified
+	//if (FireSound != NULL)
+	//{
+	//	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+	//}
+
+	//// try and play a firing animation if specified
+	//if(FireAnimation != NULL)
+	//{
+	//	// Get the animation object for the arms mesh
+	//	UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
+	//	if(AnimInstance != NULL)
+	//	{
+	//		AnimInstance->Montage_Play(FireAnimation, 1.f);
+	//	}
+	//}
+
+	// LINE TRACE STUFF
+
+	FCollisionQueryParams Traceparam;
+	FCollisionObjectQueryParams CollisionObjectParams;
+
+	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+
+	FVector End = Start + FirstPersonCameraComponent->GetForwardVector() * range;
+
+	FHitResult HitData(ForceInit);
+
+	//ignore collision with player
+	AFPSHorrorCharacter* myCharacter = Cast<AFPSHorrorCharacter>(this);
+	Traceparam.AddIgnoredActor(myCharacter);
+
+	GetWorld()->LineTraceSingle(HitData, Start, End, Traceparam, CollisionObjectParams);
+
+
+	//Check the target's hit by the line trace
+	if (HitData.GetActor() != NULL)
+	{
+		AGuard* newGuard = Cast<AGuard>(HitData.GetActor());
+		if (newGuard)
 		{
-			// spawn the projectile at the muzzle
-			World->SpawnActor<AFPSHorrorProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+			newGuard->Health -= Damage;
 		}
 	}
 
-	// try and play the sound if specified
-	if (FireSound != NULL)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
-
-	// try and play a firing animation if specified
-	if(FireAnimation != NULL)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if(AnimInstance != NULL)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
 
 }
 
@@ -140,6 +196,7 @@ void AFPSHorrorCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FV
 
 void AFPSHorrorCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
+
 	if ((TouchItem.bIsPressed == true) && ( TouchItem.FingerIndex==FingerIndex))
 	{
 		if (TouchItem.bIsPressed)
@@ -215,3 +272,49 @@ bool AFPSHorrorCharacter::EnableTouchscreenMovement(class UInputComponent* Input
 	}
 	return bResult;
 }
+
+
+void AFPSHorrorCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+
+	HealthDecay(DeltaTime);
+	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, FString::FromInt(Health));
+
+	// Screen getting bloodier as blood level gets smaller
+
+	FirstPersonCameraComponent->PostProcessSettings.ColorContrast.Set(1.0f + (1.0f * ((MaxHealth - Health) / 100.0f)), 1.0f + (1.0f * ((MaxHealth - Health) / 100.0f)), 1.0f + (1.0f * ((MaxHealth - Health) / 100.0f)));
+	FirstPersonCameraComponent->PostProcessSettings.SceneColorTint = FLinearColor(.5f + (.5f * ((MaxHealth - Health) / 100.0f)), .5f - (.3f * ((MaxHealth - Health) / 100.0f)), .5f - (.3f * ((MaxHealth - Health) / 100.0f)));
+	FirstPersonCameraComponent->PostProcessSettings.ColorGamma.Set(1.0f, 1.0f, 1.0f - (.2f * ((MaxHealth - Health) / 100.0f)));
+	FirstPersonCameraComponent->PostProcessSettings.ColorGain.Set(1.0f - (.25f * ((MaxHealth - Health) / 100.0f)), 1.0f - (.25f * ((MaxHealth - Health) / 100.0f)), 1.0f - (.25f * ((MaxHealth - Health) / 100.0f)));
+
+	if (Health <= 20)
+	{
+		FirstPersonCameraComponent->PostProcessSettings.VignetteIntensity = (20.0f - Health) / 10.0f;
+	}
+}
+
+void AFPSHorrorCharacter::HealthDecay(float DeltaTime)
+{
+	if (Health <= 0)
+	{
+		const FString Message = "You Died";
+		GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, Message);
+		LoadMainMenu();
+		return;
+	}
+
+	Health -= DeltaTime * DecayingRate;
+}
+
+int8 AFPSHorrorCharacter::GetPeerRatio()
+{
+	return CurrentPeers / MaxPeers;
+}
+
+void AFPSHorrorCharacter::LoadMainMenu()
+{
+	UGameplayStatics::OpenLevel(this, FName(TEXT("MainMenu")));
+}
+
