@@ -5,13 +5,13 @@
 
 class UInputComponent;
 
-UCLASS(config=Game)
+UCLASS(config = Game)
 class AFPSHorrorCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	/** Pawn mesh: 1st person view (arms; seen only by self) */
-	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
+		/** Pawn mesh: 1st person view (arms; seen only by self) */
+		UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class USkeletalMeshComponent* Mesh1P;
 
 	/** Gun mesh: 1st person view (seen only by self) */
@@ -29,23 +29,23 @@ public:
 	AFPSHorrorCharacter();
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseTurnRate;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+		float BaseTurnRate;
 
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseLookUpRate;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+		float BaseLookUpRate;
 
 	/** Gun muzzle's offset from the characters location */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector GunOffset;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		FVector GunOffset;
 
 	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class AFPSHorrorProjectile> ProjectileClass;
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class AFPSHorrorProjectile> ProjectileClass;
 
 	/** Sound to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	class USoundBase* FireSound;
 
 	/** AnimMontage to play each time we fire */
@@ -61,20 +61,20 @@ protected:
 	void MoveRight(float Val);
 
 	/**
-	 * Called via input to turn at a given rate.
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
+	* Called via input to turn at a given rate.
+	* @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
+	*/
 	void TurnAtRate(float Rate);
 
 	/**
-	 * Called via input to turn look up/down at a given rate.
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
+	* Called via input to turn look up/down at a given rate.
+	* @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
+	*/
 	void LookUpAtRate(float Rate);
 
 	struct TouchData
 	{
-		TouchData() { bIsPressed = false;Location=FVector::ZeroVector;}
+		TouchData() { bIsPressed = false; Location = FVector::ZeroVector; }
 		bool bIsPressed;
 		ETouchIndex::Type FingerIndex;
 		FVector Location;
@@ -103,37 +103,55 @@ public:
 
 	//called everyFrame
 	void Tick(float DeltaTime);
-	
+
 
 	int8 GetPeerRatio();
-	
 
-	
+
+
 private:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
-		float MaxPeers;
+	float MaxPeers;
 
 	UPROPERTY(EditAnywhere)
 		float MaxHealth = 100;
 
 	UPROPERTY(EditAnywhere) //line trace range for the player's attack
-		float range = 250;	
+		float range = 250;
 
 	UPROPERTY(EditAnywhere)
-		float Damage = 20.0f;
+		float Damage = 100.0f;
+
+	UPROPERTY(EditAnywhere)
+		int8 CurrentPower = 0;
+
+	UPROPERTY(EditAnywhere)
+		int8 MaxPower = 100;
+
+	UPROPERTY(EditAnywhere)
+		int8 UpgradeAddition = 6;
+
+	UPROPERTY(EditAnywhere)
+		int8 UpgradeDivision = 10;
+
+
 	void LoadMainMenu();
+
+	void CheckPower();
+
+
 
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
 
-	/* 
-	 * Configures input for touchscreen devices if there is a valid touch interface for doing so 
-	 *
-	 * @param	InputComponent	The input component pointer to bind controls to
-	 * @returns true if touch controls were enabled.
-	 */
+	/*
+	* Configures input for touchscreen devices if there is a valid touch interface for doing so
+	*
+	* @param	InputComponent	The input component pointer to bind controls to
+	* @returns true if touch controls were enabled.
+	*/
 	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
 
 public:
