@@ -45,7 +45,7 @@ void AGuard::OnAttack()
 
 	if (HitData.GetActor() != NULL)
 	{
-		AFPSHorrorCharacter* newChar = Cast<AFPSHorrorCharacter>(this);
+		AFPSHorrorCharacter* newChar = Cast<AFPSHorrorCharacter>(HitData.GetActor());
 		if (newChar)
 		{
 			newChar->Health -= Damage;
