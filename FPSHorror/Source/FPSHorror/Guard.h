@@ -35,7 +35,7 @@ public:
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "Guard")
-		void OnAttack();
+		virtual void OnAttack();
 
 	
 	

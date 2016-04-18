@@ -13,6 +13,12 @@ AGuard::AGuard()
 	PrimaryActorTick.bCanEverTick = true;
 	Health = 100;
 
+	//Start = FVector(GetActorLocation().X, GetActorLocation().Y - 100, GetActorLocation().Z);
+
+	//Start = GetActorLocation();
+	////for the king //FVector Start =  FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - 100);
+	//AForward = GetActorForwardVector();
+	//End = Start + AForward * range;
 }
 
 // Called when the game starts or when spawned
@@ -28,8 +34,10 @@ void AGuard::OnAttack()
 	FCollisionObjectQueryParams CollisionObjectParams;
 
 	FVector Start = GetActorLocation();
+	////for the king //FVector Start =  FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - 100);
 	FVector AForward = GetActorForwardVector();
 	FVector End = Start + AForward * range;
+
 	
 	FHitResult HitData(ForceInit);
 
@@ -38,10 +46,17 @@ void AGuard::OnAttack()
 
 	GetWorld()->LineTraceSingle(HitData, Start, End, Traceparam, CollisionObjectParams);
 
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f, 0, 1);
+
 	const FName TraceTag("MyTraceTag");
 
 	GetWorld()->DebugDrawTraceTag = TraceTag;
-	Traceparam.TraceTag = TraceTag;
+
+	FCollisionQueryParams CollisionParams;
+
+	CollisionParams.TraceTag = TraceTag;
+	
+	//Traceparam.TraceTag = TraceTag;
 
 	if (HitData.GetActor() != NULL)
 	{

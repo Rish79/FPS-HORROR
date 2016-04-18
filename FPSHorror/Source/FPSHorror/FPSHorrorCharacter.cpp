@@ -295,7 +295,7 @@ void AFPSHorrorCharacter::CheckPower()
 {
 	const int8 upgradeDenom = UpgradeDivision + UpgradeAddition;
 	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / upgradeDenom));
-	Damage +=  (Damage / upgradeDenom);
+	Damage +=  (Damage * 1.5 / upgradeDenom);
 
 	GEngine->AddOnScreenDebugMessage(2, 2, FColor::Blue, FString::FromInt(CurrentPower));
 	GEngine->AddOnScreenDebugMessage(3, 2, FColor::Green, FString::FromInt(CharacterMovement->MaxWalkSpeed));

@@ -20,5 +20,11 @@ class FPSHORROR_API AKing : public AGuard
 	
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
+	virtual void BeginPlay() override;
+
+protected:
+	UFUNCTION(BlueprintCallable, Category = "Guard")
+	virtual	void OnAttack() override;
+
 
 };
