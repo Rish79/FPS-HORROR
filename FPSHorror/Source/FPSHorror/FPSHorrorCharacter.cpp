@@ -83,6 +83,7 @@ void AFPSHorrorCharacter::SetupPlayerInputComponent(class UInputComponent* Input
 	// set up gameplay key bindings
 	check(InputComponent);
 
+	InputComponent->BindAction("BloodBall", IE_Pressed, this, &AFPSHorrorCharacter::ShootBloodBall);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
@@ -136,6 +137,7 @@ void AFPSHorrorCharacter::OnFire()
 			if (newGuard->Health <= 0)//increase the power meter if the guard is dead
 			{
 				CurrentPower += 10;
+				IncreaseCurrentHealth();
 				CheckPower();
 			}
 		}
@@ -253,7 +255,7 @@ void AFPSHorrorCharacter::Tick(float DeltaTime)
 
 
 	HealthDecay(DeltaTime);
-	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, FString::FromInt(Health));
+	//GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, FString::FromInt(Health));
 
 	// Screen getting bloodier as blood level gets smaller
 
@@ -295,11 +297,46 @@ void AFPSHorrorCharacter::CheckPower()
 {
 	const int8 upgradeDenom = UpgradeDivision + UpgradeAddition;
 	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / upgradeDenom));
-	Damage +=  (Damage / upgradeDenom);
+	Damage +=  (Damage * 1.5 / upgradeDenom);
 
-	GEngine->AddOnScreenDebugMessage(2, 2, FColor::Blue, FString::FromInt(CurrentPower));
+	/*GEngine->AddOnScreenDebugMessage(2, 2, FColor::Blue, FString::FromInt(CurrentPower));
 	GEngine->AddOnScreenDebugMessage(3, 2, FColor::Green, FString::FromInt(CharacterMovement->MaxWalkSpeed));
-	GEngine->AddOnScreenDebugMessage(4, 2, FColor::Yellow, FString::FromInt(Damage));
+	GEngine->AddOnScreenDebugMessage(4, 2, FColor::Yellow, FString::FromInt(Damage));*/
 
 }
 
+void AFPSHorrorCharacter::IncreaseCurrentHealth()
+{
+	if (Health <= 100)
+	{
+		Health += 15;
+		if (Health > 100)
+		{
+			Health = 100;
+		}
+	}
+}
+
+void AFPSHorrorCharacter::ShootBloodBall()
+{
+	Health -= 10;
+	if (Health <= 0)
+	{
+		LoadMainMenu();
+	}
+	if (ProjectileClass != NULL)
+	{
+		const FRotator SpawnRotation = GetControlRotation();
+		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+		//const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
+
+		const FVector SpawnLocation = GetActorLocation();
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			// spawn the projectile at the muzzle
+			World->SpawnActor<AFPSHorrorProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+		}
+	}
+}

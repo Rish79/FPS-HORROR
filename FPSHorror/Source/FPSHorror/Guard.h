@@ -26,6 +26,20 @@ public:
 	UPROPERTY(EditAnywhere)
 		float Health;
 
+	UPROPERTY(EditAnywhere) //line trace range for the player's attack
+		float range = 250;
+
+	UPROPERTY(EditAnywhere)
+		float Damage = 10.0f;
+
 	
+
+public:
+
+	UFUNCTION(BlueprintCallable, Category = "Guard")
+		virtual void OnAttack();
+
+	UFUNCTION()
+		void OnHit(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 };

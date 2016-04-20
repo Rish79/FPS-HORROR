@@ -2,6 +2,8 @@
 
 #include "FPSHorror.h"
 #include "FPSHorrorProjectile.h"
+#include "Engine.h"
+#include "Guard.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 AFPSHorrorProjectile::AFPSHorrorProjectile() 
@@ -10,7 +12,7 @@ AFPSHorrorProjectile::AFPSHorrorProjectile()
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	CollisionComp->InitSphereRadius(5.0f);
 	CollisionComp->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionComp->OnComponentHit.AddDynamic(this, &AFPSHorrorProjectile::OnHit);		// set up a notification for when this component hits something blocking
+	OnActorBeginOverlap.AddDynamic(this, &AFPSHorrorProjectile::OnHit);		// set up a notification for when this component hits something blocking
 
 	// Players can't walk on it
 	CollisionComp->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
@@ -31,13 +33,22 @@ AFPSHorrorProjectile::AFPSHorrorProjectile()
 	InitialLifeSpan = 3.0f;
 }
 
-void AFPSHorrorProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AFPSHorrorProjectile::OnHit(class AActor* OtherActor)
 {
 	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL) && OtherComp->IsSimulatingPhysics())
-	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+	//if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL) && OtherComp->IsSimulatingPhysics())
+	//{
+	//	OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 
-		Destroy();
+	//	Destroy();
+	//}
+
+	AGuard* newGuard = Cast<AGuard>(OtherActor);
+	if (newGuard)
+	{
+		newGuard->Health -= 30;
+		//GEngine->AddOnScreenDebugMessage(8, 2, FColor::Yellow, FString::FromInt(newGuard->Health));
+		this->Destroy();
 	}
+
 }

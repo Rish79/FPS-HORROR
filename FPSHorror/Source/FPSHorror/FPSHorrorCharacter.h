@@ -103,18 +103,22 @@ public:
 
 	//called everyFrame
 	void Tick(float DeltaTime);
-
+	void IncreaseCurrentHealth();
+	void ShootBloodBall();
 
 	int8 GetPeerRatio();
 
-
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
+		float CurrentPower = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
+		float MaxHealth = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
+		float MaxPower = 100;
 private:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
 	float MaxPeers;
 
-	UPROPERTY(EditAnywhere)
-		float MaxHealth = 100;
+
 
 	UPROPERTY(EditAnywhere) //line trace range for the player's attack
 		float range = 250;
@@ -122,11 +126,9 @@ private:
 	UPROPERTY(EditAnywhere)
 		float Damage = 100.0f;
 
-	UPROPERTY(EditAnywhere)
-		int8 CurrentPower = 0;
 
-	UPROPERTY(EditAnywhere)
-		int8 MaxPower = 100;
+
+
 
 	UPROPERTY(EditAnywhere)
 		int8 UpgradeAddition = 6;
