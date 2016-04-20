@@ -2,6 +2,7 @@
 
 #include "FPSHorror.h"
 #include "FPSHorrorCharacter.h"
+#include "FPSHorrorProjectile.h"
 #include "DrawDebugHelpers.h"
 #include "Guard.h"
 
@@ -84,5 +85,16 @@ void AGuard::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
 
+}
+
+void AGuard::OnHit(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//AFPSHorrorProjectile* newGuard = Cast<AFPSHorrorProjectile>(OtherActor);
+	//if (newGuard)
+	//{
+	//	newGuard->Health -= 30;
+	//	GEngine->AddOnScreenDebugMessage(8, 2, FColor::Yellow, FString::FromInt(newGuard->Health));
+	//	this->Destroy();
+	//}
 }
 

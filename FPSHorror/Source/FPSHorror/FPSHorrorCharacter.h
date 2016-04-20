@@ -103,7 +103,8 @@ public:
 
 	//called everyFrame
 	void Tick(float DeltaTime);
-
+	void IncreaseCurrentHealth();
+	void ShootBloodBall();
 
 	int8 GetPeerRatio();
 
