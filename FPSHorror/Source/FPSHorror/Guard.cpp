@@ -47,7 +47,7 @@ void AGuard::OnAttack()
 
 	GetWorld()->LineTraceSingle(HitData, Start, End, Traceparam, CollisionObjectParams);
 
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f, 0, 1);
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f, 0, 1);
 
 	const FName TraceTag("MyTraceTag");
 

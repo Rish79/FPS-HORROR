@@ -255,7 +255,7 @@ void AFPSHorrorCharacter::Tick(float DeltaTime)
 
 
 	HealthDecay(DeltaTime);
-	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, FString::FromInt(Health));
+	//GEngine->AddOnScreenDebugMessage(1, 2, FColor::Red, FString::FromInt(Health));
 
 	// Screen getting bloodier as blood level gets smaller
 
@@ -299,9 +299,9 @@ void AFPSHorrorCharacter::CheckPower()
 	CharacterMovement->MaxWalkSpeed = (CharacterMovement->MaxWalkSpeed + (CharacterMovement->MaxWalkSpeed / upgradeDenom));
 	Damage +=  (Damage * 1.5 / upgradeDenom);
 
-	GEngine->AddOnScreenDebugMessage(2, 2, FColor::Blue, FString::FromInt(CurrentPower));
+	/*GEngine->AddOnScreenDebugMessage(2, 2, FColor::Blue, FString::FromInt(CurrentPower));
 	GEngine->AddOnScreenDebugMessage(3, 2, FColor::Green, FString::FromInt(CharacterMovement->MaxWalkSpeed));
-	GEngine->AddOnScreenDebugMessage(4, 2, FColor::Yellow, FString::FromInt(Damage));
+	GEngine->AddOnScreenDebugMessage(4, 2, FColor::Yellow, FString::FromInt(Damage));*/
 
 }
 

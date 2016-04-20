@@ -47,7 +47,7 @@ void AFPSHorrorProjectile::OnHit(class AActor* OtherActor)
 	if (newGuard)
 	{
 		newGuard->Health -= 30;
-		GEngine->AddOnScreenDebugMessage(8, 2, FColor::Yellow, FString::FromInt(newGuard->Health));
+		//GEngine->AddOnScreenDebugMessage(8, 2, FColor::Yellow, FString::FromInt(newGuard->Health));
 		this->Destroy();
 	}
 
